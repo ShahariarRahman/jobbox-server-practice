@@ -85,8 +85,6 @@ const run = async () => {
     app.patch("/reply", async (req, res) => {
       const userId = req.body.userId;
       const reply = req.body.reply;
-      console.log(reply);
-      console.log(userId);
 
       const filter = { "queries.id": ObjectId(userId) };
 
@@ -134,6 +132,15 @@ const run = async () => {
     app.post("/job", async (req, res) => {
       const job = req.body;
       const result = await jobCollection.insertOne(job);
+      res.send({ status: true, data: result });
+    });
+    app.patch("/close-application", async (req, res) => {
+      const jobId = req.body.jobId;
+      const filter = { _id: ObjectId(jobId) };
+      const updateDoc = {
+        $set: { status: "closed" },
+      };
+      const result = await jobCollection.updateOne(filter, updateDoc);
       res.send({ status: true, data: result });
     });
   } finally {
